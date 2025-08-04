@@ -13,7 +13,7 @@ import postRouter from './routes/post.routes.js';
 const app = express();
 const allowedOrigins = [
   'http://localhost:5173',
-  'https://your-frontend-domain.vercel.app', // replace with your deployed frontend URL
+  'https://creative-creativity-new.up.railway.app', // replace with your deployed frontend URL
 ];
 
 app.use(
