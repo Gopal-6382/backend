@@ -11,44 +11,54 @@ import userRouter from './routes/user.routes.js';
 import postRouter from './routes/post.routes.js';
 
 const app = express();
+
+// ✅ Allowed frontend origins (local + Vercel)
 const allowedOrigins = [
-  'http://localhost:5173',
-  'https://creative-creativity-new.up.railway.app', // replace with your deployed frontend URL
+  'http://localhost:5173', // local frontend dev
+  'https://linkden.vercel.app', // your live frontend
+  'https://creative-creativity-new.up.railway.app', // optional: backend self-call
 ];
 
+// ✅ CORS middleware
 app.use(
   cors({
     origin: (origin, callback) => {
+      console.log('🌐 Request Origin:', origin);
       if (!origin || allowedOrigins.includes(origin)) {
         callback(null, true);
       } else {
-        callback(new Error('Not allowed by CORS'));
+        callback(new Error('❌ Not allowed by CORS'));
       }
     },
-    credentials: true,
+    credentials: true, // allow cookies/token headers
   })
 );
 
+// ✅ Middleware
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 
+// ✅ API Routes
 app.use('/api/v1/auth', authRouter);
 app.use('/api/v1/users', userRouter);
 app.use('/api/v1/posts', postRouter);
 
+// ✅ Default route
 app.get('/', (req, res) => {
-  res.send('Welcome to the Mini LinkedIn API');
+  res.send('🌐 Welcome to the Mini LinkedIn API');
 });
 
+// ✅ Error handler
 app.use(errorMiddleware);
 
+// ✅ Start server
 const startServer = async () => {
   try {
     await connectToDatabase();
-    app.listen(PORT, () =>
-      console.log(`✅ Server running at http://localhost:${PORT}`)
-    );
+    app.listen(PORT, () => {
+      console.log(`✅ Server running at http://localhost:${PORT}`);
+    });
   } catch (error) {
     console.error('❌ Failed to connect to DB:', error.message);
     process.exit(1);
